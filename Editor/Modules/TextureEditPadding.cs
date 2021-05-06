@@ -8,10 +8,10 @@ namespace Yorozu.EditorTool
 	{
 		internal override string Name => "Padding";
 
-		private int _top;
-		private int _left;
-		private int _right;
-		private int _bottom;
+		protected int _top;
+		protected int _left;
+		protected int _right;
+		protected int _bottom;
 
 		internal override void OnGUI()
 		{
@@ -31,8 +31,6 @@ namespace Yorozu.EditorTool
 				return;
 			}
 
-			var pixels = src.GetPixels(0);
-			var destPixels = new List<Color>(dest.width * dest.height);
 			for (var y = 0; y < src.height; y++)
 			{
 				if (y < _top || src.height - y < _bottom)
@@ -40,15 +38,13 @@ namespace Yorozu.EditorTool
 
 				for (var x = 0; x < src.width; x++)
 				{
-					if (x < _left || src.height - x < _right)
+					if (x < _left || src.width - x < _right)
 						continue;
 
-					var index = y * src.width + x;
-					destPixels.Add(pixels[index]);
+					var color = src.GetPixel(x, y);
+					dest.SetPixel(x - _left, y - _top, color);
 				}
 			}
-
-			dest.SetPixels(destPixels.ToArray());
 		}
 
 		internal override Vector2Int GetSize(Texture2D src)
