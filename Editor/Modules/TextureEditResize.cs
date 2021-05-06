@@ -33,7 +33,7 @@ namespace Yorozu.EditorTool
 
 		internal override Vector2Int GetSize(Texture2D src) => _size;
 
-		internal override void Active(Texture2D src)
+		internal override void CheckTexture(Texture2D src)
 		{
 			_size.x = src.width;
 			_size.y = src.height;

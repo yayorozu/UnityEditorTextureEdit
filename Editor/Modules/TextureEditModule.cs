@@ -15,7 +15,7 @@ namespace Yorozu.EditorTool
 			return new Vector2Int(src.width, src.height);
 		}
 
-		internal virtual void Active(Texture2D src)
+		internal virtual void CheckTexture(Texture2D src)
 		{
 		}
 	}

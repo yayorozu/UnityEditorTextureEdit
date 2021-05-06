@@ -22,7 +22,7 @@ namespace Yorozu.EditorTool
 			dest = new Texture2D(dest.width, dest.height, _format, src.mipmapCount == -1);
 		}
 
-		internal override void Active(Texture2D src)
+		internal override void CheckTexture(Texture2D src)
 		{
 			_format = src.format;
 		}

@@ -54,12 +54,20 @@ namespace Yorozu.EditorTool
 					if (check.changed)
 					{
 						if (_src != null)
-							_current.Active(_src);
+							_current.CheckTexture(_src);
 					}
 				}
 			}
 
-			_src = EditorGUILayout.ObjectField("Target Texture", _src, typeof(Texture2D), false) as Texture2D;
+			using (var check = new EditorGUI.ChangeCheckScope())
+			{
+				_src = EditorGUILayout.ObjectField("Target Texture", _src, typeof(Texture2D), false) as Texture2D;
+				if (check.changed)
+				{
+					if (_src != null)
+						_current.CheckTexture(_src);
+				}
+			}
 
 			using (new EditorGUI.DisabledScope(_src == null))
 			{
