@@ -2,7 +2,7 @@ using System;
 using UnityEditor;
 using UnityEngine;
 
-namespace Yorozu.EditorTools
+namespace Yorozu.EditorTool
 {
 	[Serializable]
 	internal class TextureEditChangeColor : TextureEditModule

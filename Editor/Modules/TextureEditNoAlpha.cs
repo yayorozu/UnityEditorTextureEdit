@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Yorozu.EditorTools
+namespace Yorozu.EditorTool
 {
 	internal class TextureEditNoAlpha : TextureEditModule
 	{

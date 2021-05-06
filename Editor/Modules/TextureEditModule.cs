@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Yorozu.EditorTools
+namespace Yorozu.EditorTool
 {
 	[Serializable]
 	internal abstract class TextureEditModule

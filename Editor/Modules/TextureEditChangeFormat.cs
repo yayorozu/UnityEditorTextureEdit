@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using EditorGUILayout = UnityEditor.EditorGUILayout;
 
-namespace Yorozu.EditorTools
+namespace Yorozu.EditorTool
 {
 	[Serializable]
 	internal class TextureEditChangeFormat : TextureEditModule
