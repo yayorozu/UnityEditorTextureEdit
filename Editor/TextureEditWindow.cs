@@ -19,11 +19,17 @@ namespace Yorozu.EditorTool
 		[SerializeField]
 		private Texture2D _src;
 		[SerializeField]
-		private int _toolIndex;
+		private int _moduleIndex;
 		[SerializeField]
-		private string[] _tabToggles;
+		private string[] _moduleNames;
 
-		private TextureEditModule _current => _tools[_toolIndex];
+		/// <summary>
+		/// 加工ミスったときように前のやつをキャッシュ
+		/// </summary>
+		[SerializeField]
+		private Texture2D _cache;
+
+		private TextureEditModule _currentModule => _tools[_moduleIndex];
 
 		private void OnEnable()
 		{
@@ -36,7 +42,13 @@ namespace Yorozu.EditorTool
 					.ToArray();
 			}
 
-			_tabToggles = _tools.Select(t => t.Name).ToArray();
+			_moduleNames = _tools.Select(t => t.Name).ToArray();
+		}
+
+		private void OnDisable()
+		{
+			DestroyImmediate(_cache);
+			_cache = null;
 		}
 
 		private void OnGUI()
@@ -46,15 +58,16 @@ namespace Yorozu.EditorTool
 				EditorGUILayout.HelpBox("Texture Edit Module Not Found", MessageType.Error);
 				return;
 			}
+
 			using (new EditorGUILayout.HorizontalScope(EditorStyles.toolbar))
 			{
 				using (var check = new EditorGUI.ChangeCheckScope())
 				{
-					_toolIndex = GUILayout.Toolbar(_toolIndex, _tabToggles, new GUIStyle(EditorStyles.toolbarButton), GUI.ToolbarButtonSize.FitToContents);
+					_moduleIndex = EditorGUILayout.Popup("Select Module", _moduleIndex, _moduleNames, EditorStyles.toolbarPopup);
 					if (check.changed)
 					{
 						if (_src != null)
-							_current.CheckTexture(_src);
+							_currentModule.CheckTexture(_src);
 					}
 				}
 			}
@@ -64,64 +77,78 @@ namespace Yorozu.EditorTool
 				_src = EditorGUILayout.ObjectField("Target Texture", _src, typeof(Texture2D), false) as Texture2D;
 				if (check.changed)
 				{
+					DestroyImmediate(_cache);
+					_cache = null;
 					if (_src != null)
-						_current.CheckTexture(_src);
+					{
+						_currentModule.CheckTexture(_src);
+						_cache = new Texture2D(_src.width, _src.height, _src.format, _src.mipmapCount > 1);
+						Graphics.CopyTexture(_src, _cache);
+					}
 				}
 			}
 
+			EditorGUILayout.HelpBox(_currentModule.Description, MessageType.Info);
 			using (new EditorGUI.DisabledScope(_src == null))
 			{
 				using (new EditorGUILayout.VerticalScope("box"))
 				{
-					_current.OnGUI();
+					_currentModule.OnGUI();
 				}
 				GUILayout.FlexibleSpace();
-				if (GUILayout.Button("Edit"))
+				using (new EditorGUILayout.HorizontalScope())
 				{
-					EditTexture(_src);
+					using (new EditorGUI.DisabledScope(_cache == null))
+					{
+						// セットしたタイミングのテクスチャに戻す
+						if (GUILayout.Button("Undo"))
+						{
+							Undo(_src);
+						}
+					}
+					using (new EditorGUI.DisabledScope(_currentModule.Disable))
+					{
+						if (GUILayout.Button("Apply"))
+						{
+							EditTexture(_src);
+						}
+					}
 				}
 			}
 		}
 
+		/// <summary>
+		/// モジュールに合わせたテクスチャの加工
+		/// </summary>
 		private void EditTexture(Texture2D src)
 		{
-			var size = _current.GetSize(src);
-			var texture = new Texture2D(size.x, size.y, src.format, src.mipmapCount == -1);
+			var size = _currentModule.GetSize(src);
+			var src2 = new Texture2D(src.width, src.height, src.format, src.mipmapCount > 1);
+			var dst = new Texture2D(size.x, size.y, src.format, src.mipmapCount > 1);
+			// ピクセル読み込みできるようにコピー
+			Graphics.CopyTexture(src, src2);
 			var path = AssetDatabase.GetAssetPath(src);
-			var importer = AssetImporter.GetAtPath(path) as TextureImporter;
 
-			// 特定の設定だと変更できないのでキャッシュ
-			var isChange1 = !importer.isReadable;
-			var prevTT = importer.textureType;
-			if (isChange1 || prevTT != TextureImporterType.Sprite)
+			_currentModule.Edit(src2, ref dst);
+
+			dst.Apply();
+
+			if (_currentModule.IsOverride)
 			{
-				if (isChange1)
-					importer.isReadable = true;
-				if (prevTT != TextureImporterType.Sprite)
-					importer.textureType = TextureImporterType.Sprite;
-
-				importer.SaveAndReimport();
-				AssetDatabase.Refresh();
+				System.IO.File.WriteAllBytes(path, dst.EncodeToPNG());
 			}
-
-			_current.Edit(src, ref texture);
-
-			texture.Apply();
-
-			System.IO.File.WriteAllBytes(path.Replace('/', System.IO.Path.DirectorySeparatorChar), texture.EncodeToPNG());
 			AssetDatabase.Refresh();
+			DestroyImmediate(dst);
+		}
 
-			// 変更した設定を戻す
-			if (isChange1 || prevTT != TextureImporterType.Sprite)
-			{
-				var importer2 = AssetImporter.GetAtPath(path) as TextureImporter;
-				if (isChange1)
-					importer2.isReadable = false;
-				if (prevTT != TextureImporterType.Sprite)
-					importer.textureType = prevTT;
+		private void Undo(Texture2D src)
+		{
+			if (_cache == null)
+				return;
 
-				importer2.SaveAndReimport();
-			}
+			var path = AssetDatabase.GetAssetPath(src);
+			System.IO.File.WriteAllBytes(path, _cache.EncodeToPNG());
+			AssetDatabase.Refresh();
 		}
 	}
 }

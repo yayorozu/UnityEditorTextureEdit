@@ -8,6 +8,7 @@ namespace Yorozu.EditorTool
 	internal class TextureEditChangeFormat : TextureEditModule
 	{
 		internal override string Name => "ChangeFormat";
+		internal override string Description => "Format を変換";
 
 		[SerializeField]
 		private TextureFormat _format;
@@ -17,9 +18,9 @@ namespace Yorozu.EditorTool
 			_format = (TextureFormat) EditorGUILayout.EnumPopup("Format", _format);
 		}
 
-		internal override void Edit(Texture2D src, ref Texture2D dest)
+		internal override void Edit(Texture2D src, ref Texture2D dst)
 		{
-			dest = new Texture2D(dest.width, dest.height, _format, src.mipmapCount == -1);
+			dst = new Texture2D(dst.width, dst.height, _format, src.mipmapCount > 1);
 		}
 
 		internal override void CheckTexture(Texture2D src)

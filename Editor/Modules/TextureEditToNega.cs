@@ -1,16 +1,19 @@
+using System;
 using UnityEngine;
 
 namespace Yorozu.EditorTool
 {
+	[Serializable]
 	internal class TextureEditToNega : TextureEditModule
 	{
-		internal override string Name => "Nega";
+		internal override string Name => "ToNega";
+		internal override string Description => "ネガポジ反転";
 
 		internal override void OnGUI()
 		{
 		}
 
-		internal override void Edit(Texture2D src, ref Texture2D dest)
+		internal override void Edit(Texture2D src, ref Texture2D dst)
 		{
 			for (var x = 0; x < src.width; x++)
 			{
@@ -20,7 +23,7 @@ namespace Yorozu.EditorTool
 					for (var i = 0; i < 3; i++)
 						color[i] = 1 - color[i];
 
-					dest.SetPixel(x, y, color);
+					dst.SetPixel(x, y, color);
 				}
 			}
 		}

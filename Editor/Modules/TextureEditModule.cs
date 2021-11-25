@@ -7,8 +7,16 @@ namespace Yorozu.EditorTool
 	internal abstract class TextureEditModule
 	{
 		internal abstract string Name { get; }
+		internal abstract string Description { get; }
 		internal abstract void OnGUI();
-		internal abstract void Edit(Texture2D src, ref Texture2D dest);
+		internal abstract void Edit(Texture2D src, ref Texture2D dst);
+
+		/// <summary>
+		/// 加工後に上書きするか
+		/// </summary>
+		internal virtual bool IsOverride => true;
+
+		internal virtual bool Disable => false;
 
 		internal virtual Vector2Int GetSize(Texture2D src)
 		{

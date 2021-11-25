@@ -8,6 +8,7 @@ namespace Yorozu.EditorTool
 	internal class TextureEditChangeAlpha : TextureEditModule
 	{
 		internal override string Name => "ChangeAlpha";
+		internal override string Description => "指定色のアルファを0にする";
 
 		[SerializeField]
 		private Color _targetColor = Color.white;
@@ -20,7 +21,7 @@ namespace Yorozu.EditorTool
 			_thresholdColor = EditorGUILayout.Slider("Color threshold", _thresholdColor, 0f, 1f);
 		}
 
-		internal override void Edit(Texture2D src, ref Texture2D dest)
+		internal override void Edit(Texture2D src, ref Texture2D dst)
 		{
 			for (var x = 0; x < src.width; x++)
 			{
@@ -41,7 +42,7 @@ namespace Yorozu.EditorTool
 					if (isReplace)
 						c.a = 0f;
 
-					dest.SetPixel(x, y, c);
+					dst.SetPixel(x, y, c);
 				}
 			}
 		}

@@ -1,12 +1,14 @@
-using System.Collections.Generic;
+using System;
 using UnityEditor;
 using UnityEngine;
 
 namespace Yorozu.EditorTool
 {
+	[Serializable]
 	internal class TextureEditPadding : TextureEditModule
 	{
 		internal override string Name => "Padding";
+		internal override string Description => "上下左右にスペースを追加削除する";
 
 		protected int _top;
 		protected int _left;
@@ -21,12 +23,12 @@ namespace Yorozu.EditorTool
 			_bottom = EditorGUILayout.IntField("Bottom", _bottom);
 		}
 
-		internal override void Edit(Texture2D src, ref Texture2D dest)
+		internal override void Edit(Texture2D src, ref Texture2D dst)
 		{
 			// 0保証
 			if (src.width - _left - _right < 0 || src.height - _top - _bottom < 0)
 			{
-				dest.SetPixels(src.GetPixels(0));
+				dst.SetPixels(src.GetPixels(0));
 				Debug.LogError("Illegal Size");
 				return;
 			}
@@ -42,7 +44,7 @@ namespace Yorozu.EditorTool
 						continue;
 
 					var color = src.GetPixel(x, y);
-					dest.SetPixel(x - _left, y - _top, color);
+					dst.SetPixel(x - _left, y - _top, color);
 				}
 			}
 		}

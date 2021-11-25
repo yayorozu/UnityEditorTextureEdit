@@ -1,6 +1,7 @@
 using System;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Yorozu.EditorTool
 {
@@ -8,6 +9,7 @@ namespace Yorozu.EditorTool
 	internal class TextureEditCutRoundAlpha : TextureEditPadding
 	{
 		internal override string Name => "CutRoundAlpha";
+		internal override string Description => "上下左右のアルファが0の領域を削除する";
 
 		internal override void OnGUI()
 		{
@@ -19,43 +21,19 @@ namespace Yorozu.EditorTool
 
 		internal override void CheckTexture(Texture2D src)
  		{
-	        var path = AssetDatabase.GetAssetPath(src);
-	        var importer = AssetImporter.GetAtPath(path) as TextureImporter;
+	        var src2 = new Texture2D(src.width, src.height, src.format, src.mipmapCount > 1);
+	        Graphics.CopyTexture(src, src2);
 
-	        // 特定の設定だと変更できないのでキャッシュ
-	        var isChange1 = !importer.isReadable;
-	        var prevTT = importer.textureType;
-	        if (isChange1 || prevTT != TextureImporterType.Sprite)
-	        {
-		        if (isChange1)
-			        importer.isReadable = true;
-		        if (prevTT != TextureImporterType.Sprite)
-			        importer.textureType = TextureImporterType.Sprite;
-
-		        importer.SaveAndReimport();
-		        AssetDatabase.Refresh();
-	        }
-
-			var pixels = src.GetPixels(0);
+			var pixels = src2.GetPixels(0);
 			CheckTop(src.width, src.height, pixels);
 			CheckBottom(src.width, src.height, pixels);
 			CheckLeft(src.width, src.height, pixels);
 			CheckRight(src.width, src.height, pixels);
 
+			Object.DestroyImmediate(src2);
+
 			base.CheckTexture(src);
-
-			// 変更した設定を戻す
-			if (isChange1 || prevTT != TextureImporterType.Sprite)
-			{
-				var importer2 = AssetImporter.GetAtPath(path) as TextureImporter;
-				if (isChange1)
-					importer2.isReadable = false;
-				if (prevTT != TextureImporterType.Sprite)
-					importer.textureType = prevTT;
-
-				importer2.SaveAndReimport();
-			}
-		}
+        }
 
 		private void CheckTop(int srcWidth, int srcHeight, Color[] pixels)
 		{

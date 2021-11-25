@@ -1,16 +1,19 @@
+using System;
 using UnityEngine;
 
 namespace Yorozu.EditorTool
 {
+	[Serializable]
 	internal class TextureEditNoAlpha : TextureEditModule
 	{
 		internal override string Name => "NoAlpha";
+		internal override string Description => "アルファをすべて1にする";
 
 		internal override void OnGUI()
 		{
 		}
 
-		internal override void Edit(Texture2D src, ref Texture2D dest)
+		internal override void Edit(Texture2D src, ref Texture2D dst)
 		{
 			for (var x = 0; x < src.width; x++)
 			{
@@ -18,7 +21,7 @@ namespace Yorozu.EditorTool
 				{
 					var color = src.GetPixel(x, y);
 					color.a = 1f;
-					dest.SetPixel(x, y, color);
+					dst.SetPixel(x, y, color);
 				}
 			}
 		}
