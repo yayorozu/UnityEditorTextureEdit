@@ -122,23 +122,35 @@ namespace Yorozu.EditorTool
 		/// </summary>
 		private void EditTexture(Texture2D src)
 		{
-			var size = _currentModule.GetSize(src);
-			var src2 = new Texture2D(src.width, src.height, src.format, src.mipmapCount > 1);
-			var dst = new Texture2D(size.x, size.y, src.format, src.mipmapCount > 1);
-			// ピクセル読み込みできるようにコピー
-			Graphics.CopyTexture(src, src2);
-			var path = AssetDatabase.GetAssetPath(src);
-
-			_currentModule.Edit(src2, ref dst);
-
-			dst.Apply();
-
-			if (_currentModule.IsOverride)
+			Texture2D dst = null;
+			try
 			{
-				System.IO.File.WriteAllBytes(path, dst.EncodeToPNG());
+				var size = _currentModule.GetSize(src);
+				var src2 = new Texture2D(src.width, src.height, src.format, src.mipmapCount > 1);
+				dst = new Texture2D(size.x, size.y, src.format, src.mipmapCount > 1);
+				// ピクセル読み込みできるようにコピー
+				Graphics.CopyTexture(src, src2);
+				var path = AssetDatabase.GetAssetPath(src);
+
+				_currentModule.Edit(src2, ref dst);
+
+				dst.Apply();
+
+				if (_currentModule.IsOverride)
+				{
+					System.IO.File.WriteAllBytes(path, dst.EncodeToPNG());
+				}
+				AssetDatabase.Refresh();
 			}
-			AssetDatabase.Refresh();
-			DestroyImmediate(dst);
+			catch (Exception e)
+			{
+				Debug.LogError(e);
+			}
+			finally
+			{
+				if (dst != null)
+					DestroyImmediate(dst);
+			}
 		}
 
 		private void Undo(Texture2D src)
