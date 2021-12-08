@@ -8,7 +8,6 @@ UnityEditor 上で Texture を加工するツール
 | ---- | ---- |
 |  ChangeAlpha  |  指定した色のアルファを0にする  |
 |  ChangeColor  |  指定した色を別の色に変換する  |
-|  ChangeFormat  |  フォーマットを別に変える  |
 |  CutRoundAlpha  |  上下左右の アルファが0の部分を削除する  |
 |  NoAplha  |  アルファをすべて1にする  |
 |  Padding  |  上下左右にスペースを追加削除する  |
