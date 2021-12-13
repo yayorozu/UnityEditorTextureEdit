@@ -3,7 +3,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-namespace Yorozu.EditorTool
+namespace Yorozu.EditorTool.TextureEdit
 {
     [Serializable]
     internal class TextureEditSplit : TextureEditModule

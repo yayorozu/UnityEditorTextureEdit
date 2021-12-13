@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace Yorozu.EditorTool
+namespace Yorozu.EditorTool.TextureEdit
 {
 	internal class TextureEditWindow : EditorWindow
 	{
@@ -66,8 +66,7 @@ namespace Yorozu.EditorTool
 					_moduleIndex = EditorGUILayout.Popup("Select Module", _moduleIndex, _moduleNames, EditorStyles.toolbarPopup);
 					if (check.changed)
 					{
-						if (_src != null)
-							_currentModule.CheckTexture(_src);
+						_currentModule.ApplyNewTexture(_src);
 					}
 				}
 			}
@@ -79,9 +78,9 @@ namespace Yorozu.EditorTool
 				{
 					DestroyImmediate(_cache);
 					_cache = null;
+					_currentModule.ApplyNewTexture(_src);
 					if (_src != null)
 					{
-						_currentModule.CheckTexture(_src);
 						_cache = new Texture2D(_src.width, _src.height, _src.format, _src.mipmapCount > 1);
 						Graphics.CopyTexture(_src, _cache);
 					}
@@ -153,6 +152,9 @@ namespace Yorozu.EditorTool
 			}
 		}
 
+		/// <summary>
+		/// もとのテクスチャに戻す
+		/// </summary>
 		private void Undo(Texture2D src)
 		{
 			if (_cache == null)

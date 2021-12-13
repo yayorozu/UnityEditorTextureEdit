@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Yorozu.EditorTool
+namespace Yorozu.EditorTool.TextureEdit
 {
 	[Serializable]
 	internal class TextureEditCutRoundAlpha : TextureEditPadding
@@ -19,7 +19,7 @@ namespace Yorozu.EditorTool
 			}
 		}
 
-		internal override void CheckTexture(Texture2D src)
+		protected override void CheckTexture(Texture2D src)
  		{
 	        var src2 = new Texture2D(src.width, src.height, src.format, src.mipmapCount > 1);
 	        Graphics.CopyTexture(src, src2);
@@ -31,15 +31,13 @@ namespace Yorozu.EditorTool
 			CheckRight(src.width, src.height, pixels);
 
 			Object.DestroyImmediate(src2);
-
-			base.CheckTexture(src);
         }
 
 		private void CheckTop(int srcWidth, int srcHeight, Color[] pixels)
 		{
 			_top = 0;
 
-			for (var y = 0; y < srcHeight; y++)
+			for (var y = srcHeight - 1; y >= 0; y--)
 			{
 				var isBreak = false;
 				for (var x = 0; x < srcWidth; x++)
@@ -62,7 +60,7 @@ namespace Yorozu.EditorTool
 		private void CheckBottom(int srcWidth, int srcHeight, Color[] pixels)
 		{
 			_bottom = 0;
-			for (var y = srcHeight - 1; y >= 0; y--)
+			for (var y = 0; y < srcHeight; y++)
 			{
 				var isBreak = false;
 				for (var x = 0; x < srcWidth; x++)

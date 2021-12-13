@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace Yorozu.EditorTool
+namespace Yorozu.EditorTool.TextureEdit
 {
     internal class TextureEditToNPOT : TextureEditResize
     {
@@ -26,7 +26,7 @@ namespace Yorozu.EditorTool
             _size.y = EditorGUILayout.IntPopup("Height", _size.y, _potTexts, _pots);
         }
 
-        internal override void CheckTexture(Texture2D src)
+        protected override void CheckTexture(Texture2D src)
         {
             base.CheckTexture(src);
             _size.x = GetIndex(src.width);

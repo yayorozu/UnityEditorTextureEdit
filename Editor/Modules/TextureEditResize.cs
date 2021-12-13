@@ -2,7 +2,7 @@ using System;
 using UnityEditor;
 using UnityEngine;
 
-namespace Yorozu.EditorTool
+namespace Yorozu.EditorTool.TextureEdit
 {
 	[Serializable]
 	internal class TextureEditResize : TextureEditModule
@@ -39,7 +39,7 @@ namespace Yorozu.EditorTool
 
 		internal override Vector2Int GetSize(Texture2D src) => _size;
 
-		internal override void CheckTexture(Texture2D src)
+		protected override void CheckTexture(Texture2D src)
 		{
 			_width = src.width;
 			_height = src.height;

@@ -2,7 +2,7 @@ using System;
 using UnityEditor;
 using UnityEngine;
 
-namespace Yorozu.EditorTool
+namespace Yorozu.EditorTool.TextureEdit
 {
 	[Serializable]
 	internal class TextureEditPadding : TextureEditModule
@@ -35,7 +35,7 @@ namespace Yorozu.EditorTool
 
 			for (var y = 0; y < src.height; y++)
 			{
-				if (y < _top || src.height - y < _bottom)
+				if (y < _bottom || src.height - y < _top)
 					continue;
 
 				for (var x = 0; x < src.width; x++)
@@ -44,7 +44,7 @@ namespace Yorozu.EditorTool
 						continue;
 
 					var color = src.GetPixel(x, y);
-					dst.SetPixel(x - _left, y - _top, color);
+					dst.SetPixel(x - _left, y - _bottom, color);
 				}
 			}
 		}

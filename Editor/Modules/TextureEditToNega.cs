@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Yorozu.EditorTool
+namespace Yorozu.EditorTool.TextureEdit
 {
 	[Serializable]
 	internal class TextureEditToNega : TextureEditModule
