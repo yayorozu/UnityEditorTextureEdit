@@ -15,7 +15,7 @@ namespace Yorozu.EditorTool.TextureEdit
 		protected int _right;
 		protected int _bottom;
 
-		internal override void OnGUI()
+		protected override void Draw()
 		{
 			_top = EditorGUILayout.IntField("Top", _top);
 			_left = EditorGUILayout.IntField("Left", _left);

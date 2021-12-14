@@ -11,11 +11,11 @@ namespace Yorozu.EditorTool.TextureEdit
 		internal override string Name => "CutRoundAlpha";
 		internal override string Description => "上下左右のアルファが0の領域を削除する";
 
-		internal override void OnGUI()
+		protected override void Draw()
 		{
 			using (new EditorGUI.DisabledScope(true))
 			{
-				base.OnGUI();
+				base.Draw();
 			}
 		}
 

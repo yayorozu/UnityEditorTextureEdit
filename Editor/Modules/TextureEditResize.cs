@@ -16,7 +16,7 @@ namespace Yorozu.EditorTool.TextureEdit
 		protected int _height;
 
 
-		internal override void OnGUI()
+		protected override void Draw()
 		{
 			EditorGUILayout.LabelField($"Current Size. Width: {_width} Height:{_height}", EditorStyles.boldLabel);
 			EditorGUILayout.Space(10);
@@ -25,12 +25,20 @@ namespace Yorozu.EditorTool.TextureEdit
 
 		internal override void Edit(Texture2D src, ref Texture2D dst)
 		{
+			Resize(src, ref dst);
+		}
+
+		internal static void Resize(Texture2D src, ref Texture2D dst)
+		{
+			var width = dst.width;
+			var height = dst.height;
+			
 			var pixels = dst.GetPixels(0);
 			for(var i = 0; i < pixels.Length; i++)
 			{
 				pixels[i] = src.GetPixelBilinear(
-					i % _size.x * (1 / (float) _size.x),
-					Mathf.Floor(i / (float)_size.x) * (1 / (float) _size.y)
+					i % width * (1 / (float) width),
+					Mathf.Floor(i / (float) width) * (1 / (float) height)
 				);
 			}
 

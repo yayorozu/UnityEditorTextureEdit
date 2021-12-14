@@ -9,21 +9,12 @@ namespace Yorozu.EditorTool.TextureEdit
 		internal override string Name => "NoAlpha";
 		internal override string Description => "アルファをすべて1にする";
 
-		internal override void OnGUI()
-		{
-		}
+		protected override bool ValidPreview => true;
 
-		internal override void Edit(Texture2D src, ref Texture2D dst)
+		protected override Color Convert(int x, int y, Color color)
 		{
-			for (var x = 0; x < src.width; x++)
-			{
-				for (var y = 0; y < src.height; y++)
-				{
-					var color = src.GetPixel(x, y);
-					color.a = 1f;
-					dst.SetPixel(x, y, color);
-				}
-			}
+			color.a = 1f;
+			return color;
 		}
 	}
 }

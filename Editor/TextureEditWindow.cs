@@ -15,7 +15,7 @@ namespace Yorozu.EditorTool.TextureEdit
 		}
 
 		[SerializeReference]
-		private TextureEditModule[] _tools;
+		private TextureEditModule[] _modules;
 		[SerializeField]
 		private Texture2D _src;
 		[SerializeField]
@@ -29,20 +29,20 @@ namespace Yorozu.EditorTool.TextureEdit
 		[SerializeField]
 		private Texture2D _cache;
 
-		private TextureEditModule _currentModule => _tools[_moduleIndex];
+		private TextureEditModule _currentModule => _modules[_moduleIndex];
 
 		private void OnEnable()
 		{
-			if (_tools == null)
+			if (_modules == null)
 			{
-				_tools = AppDomain.CurrentDomain.GetAssemblies()
+				_modules = AppDomain.CurrentDomain.GetAssemblies()
 					.SelectMany(a => a.GetTypes())
 					.Where(t => !t.IsAbstract && t.IsSubclassOf(typeof(TextureEditModule)))
 					.Select(t => Activator.CreateInstance(t, true) as TextureEditModule)
 					.ToArray();
 			}
 
-			_moduleNames = _tools.Select(t => t.Name).ToArray();
+			_moduleNames = _modules.Select(t => t.Name).ToArray();
 		}
 
 		private void OnDisable()
@@ -53,7 +53,7 @@ namespace Yorozu.EditorTool.TextureEdit
 
 		private void OnGUI()
 		{
-			if (_tools == null || _tools.Length <= 0)
+			if (_modules == null || _modules.Length <= 0)
 			{
 				EditorGUILayout.HelpBox("Texture Edit Module Not Found", MessageType.Error);
 				return;
@@ -63,9 +63,11 @@ namespace Yorozu.EditorTool.TextureEdit
 			{
 				using (var check = new EditorGUI.ChangeCheckScope())
 				{
+					var index = _moduleIndex;  
 					_moduleIndex = EditorGUILayout.Popup("Select Module", _moduleIndex, _moduleNames, EditorStyles.toolbarPopup);
 					if (check.changed)
 					{
+						_modules[index].Exit();
 						_currentModule.ApplyNewTexture(_src);
 					}
 				}

@@ -18,7 +18,7 @@ namespace Yorozu.EditorTool.TextureEdit
 
         private string[] _potTexts = _pots.Select(p => p.ToString()).ToArray();
 
-        internal override void OnGUI()
+        protected override void Draw()
         {
             EditorGUILayout.LabelField($"Current Size. Width: {_width} Height:{_height}", EditorStyles.boldLabel);
             EditorGUILayout.Space(10);

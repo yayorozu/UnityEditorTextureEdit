@@ -15,7 +15,7 @@ namespace Yorozu.EditorTool.TextureEdit
         private int _verticalSplit = 1;
         internal override bool Disable => _horizontalSplit <= 1 && _verticalSplit <= 1;
 
-        internal override void OnGUI()
+        protected override void Draw()
         {
             _horizontalSplit = EditorGUILayout.IntField("Horizontal", _horizontalSplit);
             _verticalSplit = EditorGUILayout.IntField("Vertical", _verticalSplit);
