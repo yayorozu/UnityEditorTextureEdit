@@ -22,6 +22,8 @@ namespace Yorozu.EditorTool.TextureEdit
 		private int _moduleIndex;
 		[SerializeField]
 		private string[] _moduleNames;
+		
+		private bool supportFormat => _src != null && ValidTextureFormats.Contains(_src.format);
 
 		/// <summary>
 		/// 加工ミスったときように前のやつをキャッシュ
@@ -30,6 +32,14 @@ namespace Yorozu.EditorTool.TextureEdit
 		private Texture2D _cache;
 
 		private TextureEditModule _currentModule => _modules[_moduleIndex];
+
+		/// <summary>
+		/// サポートしてるTextureFormat
+		/// </summary>
+		private static readonly TextureFormat[] ValidTextureFormats = new TextureFormat[]
+		{
+			TextureFormat.RGBA32, TextureFormat.ARGB32, TextureFormat.RGB24, TextureFormat.Alpha8,
+		};
 
 		private void OnEnable()
 		{
@@ -97,6 +107,12 @@ namespace Yorozu.EditorTool.TextureEdit
 					_currentModule.OnGUI();
 				}
 				GUILayout.FlexibleSpace();
+				
+				if (!supportFormat)
+				{
+					EditorGUILayout.HelpBox("Works only on RGBA32, ARGB32, RGB24 and Alpha8 texture formats.", MessageType.Error);
+				}
+					
 				using (new EditorGUILayout.HorizontalScope())
 				{
 					using (new EditorGUI.DisabledScope(_cache == null))
@@ -107,7 +123,8 @@ namespace Yorozu.EditorTool.TextureEdit
 							Undo(_src);
 						}
 					}
-					using (new EditorGUI.DisabledScope(_currentModule.Disable))
+					
+					using (new EditorGUI.DisabledScope(_currentModule.Disable || !supportFormat))
 					{
 						if (GUILayout.Button("Apply"))
 						{
@@ -132,16 +149,20 @@ namespace Yorozu.EditorTool.TextureEdit
 				// ピクセル読み込みできるようにコピー
 				Graphics.CopyTexture(src, src2);
 				var path = AssetDatabase.GetAssetPath(src);
-
+				
 				_currentModule.Edit(src2, ref dst);
 
-				dst.Apply();
-
-				if (_currentModule.IsOverride)
+				if (dst != null)
 				{
-					System.IO.File.WriteAllBytes(path, dst.EncodeToPNG());
+					dst.Apply();
+
+					if (_currentModule.IsOverride)
+					{
+						System.IO.File.WriteAllBytes(path, dst.EncodeToPNG());
+					}
+
+					AssetDatabase.Refresh();
 				}
-				AssetDatabase.Refresh();
 			}
 			catch (Exception e)
 			{
