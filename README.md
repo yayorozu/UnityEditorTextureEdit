@@ -2,6 +2,9 @@
 
 UnityEditor 上で Texture を加工するツール
 
+※Texture2D.SetPixels を利用している都合上 RGBA32, ARGB32, RGB24, Alpha8 の フォーマットのテクスチャにのみ利用できます<br>
+他にPixel に書き込む方法がわかれば対応していきます
+
 以下の機能を有する
 
 |  モード  |  機能  |
