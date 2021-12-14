@@ -1,7 +1,7 @@
 {
   "name": "yorozu.texture-edit",
   "version": "1.0.0",
-  "displayName": "TextureEdit",
+  "displayName": "Texture Edit",
   "description": "テクスチャを加工するためのツール",
   "unity": "2020.3",
   "keywords": [
