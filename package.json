@@ -1,0 +1,17 @@
+{
+  "name": "yorozu.texture-edit",
+  "version": "1.0.0",
+  "displayName": "TextureEdit",
+  "description": "テクスチャを加工するためのツール",
+  "unity": "2020.3",
+  "keywords": [
+    "EditorTool",
+    "Yorozu",
+    "Texture"
+  ],
+  "author": {
+    "name": "Yorozu",
+    "email": "hatch.tech.eng@gmail.com",
+    "url": "https://github.com/yayorozu"
+  }
+}
