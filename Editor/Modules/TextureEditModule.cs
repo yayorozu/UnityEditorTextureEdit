@@ -162,7 +162,7 @@ namespace Yorozu.EditorTool.TextureEdit
 						_previewTexture.height
 					);
 
-					EditorGUI.DrawTextureTransparent(rect, _previewTexture);
+					EditorGUI.DrawTextureTransparent(rect, _previewTexture, ScaleMode.ScaleToFit);
 				}
 			}
 
