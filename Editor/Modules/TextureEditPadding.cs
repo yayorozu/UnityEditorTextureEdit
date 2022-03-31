@@ -35,12 +35,12 @@ namespace Yorozu.EditorTool.TextureEdit
 
 			for (var y = 0; y < src.height; y++)
 			{
-				if (y < _bottom || src.height - y < _top)
+				if (y < _bottom || src.height - y <= _top)
 					continue;
 
 				for (var x = 0; x < src.width; x++)
 				{
-					if (x < _left || src.width - x < _right)
+					if (x < _left || src.width - x <= _right)
 						continue;
 
 					var color = src.GetPixel(x, y);
