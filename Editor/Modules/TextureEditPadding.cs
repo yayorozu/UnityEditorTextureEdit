@@ -23,7 +23,7 @@ namespace Yorozu.EditorTool.TextureEdit
 			_bottom = EditorGUILayout.IntField("Bottom", _bottom);
 		}
 
-		internal override void Edit(Texture2D src, ref Texture2D dst)
+		internal override void Edit(Texture2D src, ref Texture2D dst, string path)
 		{
 			// 0保証
 			if (src.width - _left - _right < 0 || src.height - _top - _bottom < 0)

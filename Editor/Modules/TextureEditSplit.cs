@@ -9,21 +9,48 @@ namespace Yorozu.EditorTool.TextureEdit
     internal class TextureEditSplit : TextureEditModule
     {
         internal override string Name => "Split";
-        internal override string Description => "指定数で分割";
+        internal override string Description => "指定サイズで分割";
 
-        private int _horizontalSplit = 1;
-        private int _verticalSplit = 1;
-        internal override bool Disable => _horizontalSplit <= 1 && _verticalSplit <= 1;
+        private Vector2Int _srcSize;
+        private Vector2Int _splitCount;
+        private Vector2Int _remainderPixel;
+        private Vector2Int _size = new Vector2Int(1, 1);
+        private Vector2Int _space = new Vector2Int(0, 0);
+        internal override bool Disable => !(_size.x > 0 && _size.y > 0 && _space.x >= 0 && _space.y >= 0);
 
         protected override void Draw()
         {
-            _horizontalSplit = EditorGUILayout.IntField("Horizontal", _horizontalSplit);
-            _verticalSplit = EditorGUILayout.IntField("Vertical", _verticalSplit);
+            EditorGUILayout.LabelField($"TextureSize", _srcSize.ToString());
+            EditorGUILayout.LabelField($"Split Count", _splitCount.ToString());
+            EditorGUILayout.LabelField($"Remainder Count", _remainderPixel.ToString());
+            EditorGUILayout.Space(5);
+
+            using (var check = new EditorGUI.ChangeCheckScope())
+            {
+                _size = EditorGUILayout.Vector2IntField("Size", _size);
+                _space = EditorGUILayout.Vector2IntField("Space", _space);
+                if (check.changed)
+                {
+                    // 縦横分割数
+                    for (var i = 0; i < 2; i++)
+                    {
+                        if (_size[i] > _srcSize[i])
+                            _size[i] = _srcSize[i];
+                        
+                        _splitCount[i] = Mathf.FloorToInt((_srcSize[i] + _space[i]) / (float)(_size[i] + _space[i]));
+                        _remainderPixel[i] = _srcSize[i] - (_splitCount[i] * (_size[i] + _space[i]) - _space[i]);
+                    }
+                }
+            }
         }
 
-        internal override void Edit(Texture2D src, ref Texture2D dst)
+        protected override void CheckTexture(Texture2D src)
         {
-            var path = AssetDatabase.GetAssetPath(src);
+            _srcSize = new Vector2Int(src.width, src.height);
+        }
+
+        internal override void Edit(Texture2D src, ref Texture2D dst, string path)
+        {
             var parent = Directory.GetParent(path);
             var fileName = Path.GetFileNameWithoutExtension(path);
             var rootPath = Path.Combine(parent.FullName, fileName);
@@ -33,25 +60,30 @@ namespace Yorozu.EditorTool.TextureEdit
             }
 
             Graphics.CopyTexture(src, dst);
-            var size = new Vector2Int(src.width / _horizontalSplit, src.height / _verticalSplit);
-            for (var xIndex = 0; xIndex < _horizontalSplit; xIndex++)
+
+            var index = 0;
+            var y = 0; 
+            while (y < src.height)
             {
-                for (var yIndex = 0; yIndex < _verticalSplit; yIndex++)
+                var x = 0;
+                while (x < src.width)
                 {
-                    var texture = new Texture2D(size.x, size.y, src.format, false);
-                    for (var x = 0; x < size.x; x++)
+                    var texture = new Texture2D(_size.x, _size.y, src.format, false);
+                    for (var x2 = 0; x2 < _size.x; x2++)
                     {
-                        for (var y = 0; y < size.x; y++)
+                        for (var y2 = 0; y2 < _size.x; y2++)
                         {
-                            var color =  dst.GetPixel(xIndex * size.x + x, yIndex * size.y + y);
-                            texture.SetPixel(x, y, color);
+                            var color =  dst.GetPixel(x + x2, y + y2);
+                            texture.SetPixel(x2, y2, color);
                         }
                     }
                     texture.Apply();
-
-                    var savePath = Path.Combine(rootPath, fileName + "_" + xIndex + "_" + yIndex + Path.GetExtension(path));
+                    var savePath = Path.Combine(rootPath, $"{fileName}_{index++}.{Path.GetExtension(path)}");
                     File.WriteAllBytes(savePath, texture.EncodeToPNG());
+                    x += _space.x + _size.x;
                 }
+                
+                y += _space.y + _size.y;
             }
         }
     }

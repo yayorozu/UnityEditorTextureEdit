@@ -150,7 +150,7 @@ namespace Yorozu.EditorTool.TextureEdit
 				Graphics.CopyTexture(src, src2);
 				var path = AssetDatabase.GetAssetPath(src);
 				
-				_currentModule.Edit(src2, ref dst);
+				_currentModule.Edit(src2, ref dst, path);
 
 				if (dst != null)
 				{

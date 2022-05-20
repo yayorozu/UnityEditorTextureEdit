@@ -23,7 +23,7 @@ namespace Yorozu.EditorTool.TextureEdit
 			_size = EditorGUILayout.Vector2IntField("Size", _size);
 		}
 
-		internal override void Edit(Texture2D src, ref Texture2D dst)
+		internal override void Edit(Texture2D src, ref Texture2D dst, string path)
 		{
 			Resize(src, ref dst);
 		}

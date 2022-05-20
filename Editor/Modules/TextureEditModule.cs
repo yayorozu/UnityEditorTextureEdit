@@ -44,13 +44,13 @@ namespace Yorozu.EditorTool.TextureEdit
 
 			DrawPreview();
 		}
-		
+
 		protected virtual void Draw(){}
 		
 		/// <summary>
 		/// 加工処理
 		/// </summary>
-		internal virtual void Edit(Texture2D src, ref Texture2D dst)
+		internal virtual void Edit(Texture2D src, ref Texture2D dst, string path)
 		{
 			for (var x = 0; x < src.width; x++)
 			{
