@@ -118,7 +118,7 @@ namespace Yorozu.EditorTool.TextureEdit
 		{
 			try
 			{
-				var readableTexture = new Texture2D(src.width, src.height, TextureEditWindow.Format, src.mipmapCount > 1);
+				var readableTexture = new Texture2D(src.width, src.height, src.format, src.mipmapCount > 1);
 				Graphics.CopyTexture(src, readableTexture);
 				var size = new Vector2(MaxPreviewSize, MaxPreviewSize);
 				// 大きい方をベースに計算
@@ -127,10 +127,10 @@ namespace Yorozu.EditorTool.TextureEdit
 				else
 					size.x = src.width / (src.height / MaxPreviewSize);
 
-				_srcTexture = new Texture2D((int) size.x, (int) size.y, TextureEditWindow.Format, false);
+				_srcTexture = new Texture2D((int) size.x, (int) size.y, TextureFormat.RGBA32, false);
 				TextureEditResize.Resize(readableTexture, ref _srcTexture);
 				// 表示するやつはエラーが出ないようにフォーマット指定
-				_previewTexture = new Texture2D(_srcTexture.width, _srcTexture.height, TextureEditWindow.Format, false);
+				_previewTexture = new Texture2D(_srcTexture.width, _srcTexture.height, TextureFormat.RGBA32, false);
 				UpdatePreview();
 			}
 			catch (Exception e)
