@@ -10,6 +10,7 @@ namespace Yorozu.EditorTool.TextureEdit
     {
         internal override string Name => "Split";
         internal override string Description => "指定サイズで分割";
+        internal override bool IsOverride => false;
 
         private Vector2Int _srcSize;
         private Vector2Int _splitCount;
@@ -59,8 +60,6 @@ namespace Yorozu.EditorTool.TextureEdit
                 Directory.CreateDirectory(rootPath);
             }
 
-            Graphics.CopyTexture(src, dst);
-
             var index = 0;
             var y = 0; 
             while (y < src.height)
@@ -78,7 +77,7 @@ namespace Yorozu.EditorTool.TextureEdit
                         }
                     }
                     texture.Apply();
-                    var savePath = Path.Combine(rootPath, $"{fileName}_{index++}.{Path.GetExtension(path)}");
+                    var savePath = Path.Combine(rootPath, $"{fileName}_{index++}{Path.GetExtension(path)}");
                     File.WriteAllBytes(savePath, texture.EncodeToPNG());
                     x += _space.x + _size.x;
                 }
