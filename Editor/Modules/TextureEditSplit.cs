@@ -59,6 +59,8 @@ namespace Yorozu.EditorTool.TextureEdit
             {
                 Directory.CreateDirectory(rootPath);
             }
+            
+            Graphics.CopyTexture(src, dst);
 
             var index = 0;
             var y = 0; 
