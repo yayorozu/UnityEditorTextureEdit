@@ -21,7 +21,7 @@ namespace Yorozu.EditorTool.TextureEdit
 
 		protected override void CheckTexture(Texture2D src)
  		{
-	        var src2 = new Texture2D(src.width, src.height, src.format, src.mipmapCount > 1);
+	        var src2 = new Texture2D(src.width, src.height, TextureEditWindow.Format, src.mipmapCount > 1);
 	        Graphics.CopyTexture(src, src2);
 
 			var pixels = src2.GetPixels(0);
